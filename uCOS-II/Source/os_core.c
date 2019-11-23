@@ -1734,14 +1734,36 @@ static  void  OS_SchedNew (void)
 
 #if Scheduling == EDF
 	INT32S mostUrgentDeadline = 0x7FFFFFFF;
-	//Task ready check
-	//select a task with the closest deadline
-	//Timeout processing 
+
+    for (INT8U i = 0; i <= OS_LOWEST_PRIO - 1; i++) {
+        if ((OSTCBPrioTbl[i] != (OS_TCB *)0) && (OSTCBPrioTbl != OS_TCB_RESERVED)) {
+            OS_TCB *ptr_current = OSTCBPrioTbl[i];
+            // Task ready check
+
+            if (ptr_current->OSTCBDly == 0) {
+                if ((ptr_current->OSTCBDeadline <= (INT32S)OSTime) && (ptr_current->OSTCBPrio != OS_LOWEST_PRIO)) {
+                    ptr_current->OSTCBDeadline += ptr_current->OSTCBPeriod;
+                    fprintf(stderr, "%u\t%-10s%4u\n", OSTime - 1, "Timeout", ptr_current->OSTCBPrio);
+                    continue;
+                }
+                // Timeout processing
+
+                if (ptr_current->OSTCBDeadline < mostUrgentDeadline) {
+                    mostUrgentPriority = ptr_current->OSTCBPrio;
+                    mostUrgentDeadline = ptr_current->OSTCBDeadline;
+                }
+            }
+        }
+    }
+
+    OSPrioHighRdy = mostUrgentPriority;
+    // Select a task with the closest deadline
+
 #elif Scheduling == RM
 	INT32S mostUrgentPeriod = 0x7FFFFFFF;
-	//Task ready check
-	//select a task with the smallest period
-	//Timeout processing 
+	// Task ready check
+	// Select a task with the smallest period
+	// Timeout processing 
 #endif
 }
 
