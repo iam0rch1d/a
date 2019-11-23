@@ -574,8 +574,10 @@ typedef struct os_tcb {
     INT16U           OSTCBId;               /* Task ID (0..65535)                                      */
 #endif
 
-	//Modification here, add 4 variables
-
+	INT32S OSTCBPeriod;
+    INT32S OSTCBDeadline;
+    INT32S OSTCBProcessingTime;
+    INT32S OSTCBTotalProcessingTime;
 
 	INT16U dependencyOSTCBPriority[OS_TASK_MAX_DEPEDENCY];
 	INT16U childOSTCBPriority[OS_TASK_MAX_DEPEDENCY];

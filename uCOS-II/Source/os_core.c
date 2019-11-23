@@ -2014,12 +2014,13 @@ INT8U  OS_TCBInit (INT8U    prio,
         ptcb->OSTCBOpt           = opt;                    /* Store task options                       */
         ptcb->OSTCBId            = id;                     /* Store task ID                            */
 
-		//Modification here, initialize 4 variables
 		INT32S *p = (INT32S *)pext;
+        ptcb->OSTCBPeriod = p[DEADLINE];
+        ptcb->OSTCBDeadline = p[DEADLINE];
+        ptcb->OSTCBProcessingTime = p[COMP_TIME];
+        ptcb->OSTCBTotalProcessingTime = p[COMP_TIME];
 		ptcb->OSTCBDly = p[RELEASE_TIME];
 
-
-		
 #else
         pext                     = pext;                   /* Prevent compiler warning if not used     */
         stk_size                 = stk_size;

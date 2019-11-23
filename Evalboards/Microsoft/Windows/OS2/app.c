@@ -67,9 +67,9 @@ static CPU_STK stack12[APP_TASK_STK_SIZE];
 
 
 INT32S limits[][3] = {
-		{ 0, 0, 0 },//Prio0
-		{ 25, 50, 0 },//Prio1
-		{ 35,80, 0 },//Prio2
+		{ 0,  0, 0}, // Priority 0
+		{25, 50, 0}, // Priority 1
+		{35, 80, 0}, // Priority 2
 };
 
 /*
@@ -149,18 +149,15 @@ static void periodicTask(void *p_arg)
 	INT32S toDelay;
 	start = 0;
 
-	//modification here
 	while (1)
 	{
-		while (OSTCBCur-> > 0)
-		{
-			//Do nothing
-		}
+		while (OSTCBCur->OSTCBProcessingTime > 0);
+
 		end = OSTimeGet();
-		toDelay = OSTCBCur-> - (end - start) % OSTCBCur->;
+		toDelay = OSTCBCur->OSTCBPeriod - (end - start) % OSTCBCur->OSTCBPeriod;
 		toDelay = toDelay < 0 ? 0 : toDelay;
-		start += (OSTCBCur->);
-		OSTCBCur-> = OSTCBCur->;
+		start += (OSTCBCur->OSTCBPeriod);
+		OSTCBCur->OSTCBProcessingTime = OSTCBCur->OSTCBTotalProcessingTime;
 		OSTimeDly(toDelay);
 	}
 }
